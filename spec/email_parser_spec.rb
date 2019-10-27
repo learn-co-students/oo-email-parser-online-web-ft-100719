@@ -1,20 +1,23 @@
-describe "EmailAddressParser" do
-  describe '#parse' do
-    it "parses CSV emails" do
-      expect(EmailAddressParser.new("avi@test.com, arel@test.com").parse).to eq(["avi@test.com", "arel@test.com"])
+class EmailParser
+   attr_accessor :name, :csv_emails
+    
+    def initialize(csv_emails)
+     @csv_emails = csv_emails
+     
+  end    
+  
+  def parse 
+    csv_emails.split.collect do |address|
+      address.split(',') 
     end
+    .flatten.uniq 
+  end 
+end 
 
-    it "parses space delimited emails" do
-      expect(EmailAddressParser.new("avi@test.com arel@test.com").parse).to eq(["avi@test.com", "arel@test.com"])
-    end
+emails1 = "razo@mz.com, lin@gmm.org, lagos@gmail.net"
+parser1 = EmailParser.new(emails1)
+parser1.parse 
 
-    it "parses both CSV and space delimited emails" do
-      emails = "avi@test.com, arel@test.com test@avi.com, test@arel.com"
-      expect(EmailAddressParser.new(emails).parse).to eq(["avi@test.com", "arel@test.com","test@avi.com", "test@arel.com"]) 
-    end
-
-    it 'parses and removes duplicate emails' do
-      expect(EmailAddressParser.new("avi@test.com, avi@test.com").parse).to eq(["avi@test.com"])
-    end
-  end
-end
+emails2 = "asd@qw.com per@er.org per@er.org Zaza@sugar.net"
+parser2 = EmailParser.new(emails2)
+parser2.parse
